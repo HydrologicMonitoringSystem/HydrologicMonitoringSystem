@@ -1,108 +1,101 @@
-import React, { Component } from 'react';
+import React from 'react';
+import echarts from 'echarts/lib/echarts';
+import 'echarts/lib/chart/bar';
+import 'echarts/lib/chart/line';
+import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/title';
+import 'echarts/lib/component/legend';
+import 'echarts/lib/component/toolbox';
+import 'echarts/lib/component/markPoint';
+import 'echarts/lib/component/markLine';
 import { connect } from 'dva';
-import { Select } from 'antd';
-import {
-    G2,
-    Chart,
-    Geom,
-    Axis,
-    Tooltip,
-    Coord,
-    Label,
-    Legend,
-    View,
-    Guide,
-    Shape,
-    Facet,
-    Util,
-} from 'bizcharts';
 
-const { Line } = Guide;
-
-const namespace = 'stationInfoBasic'
-
-function onChange(value) {
-    console.log(`selected ${value}`);
-}
+const namespace = 'stationInfoBasic';
 
 const mapStateToProps = (state) => {
-    const stationList = state[namespace].stationList;
     const data = state[namespace].data;
-    const cols = state[namespace].cols;
     return {
-        stationList,
-        data,
-        cols
+        data
     };
 };
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onDidMount: () => {
-            dispatch({
-                type: `${namespace}/queryStationList`,
-            });
-        },
-    };
-};
-
-@connect(mapStateToProps, mapDispatchToProps)
-export default class StationInfoBasic extends Component {
-    componentDidMount() {
-        this.props.onDidMount();
-    }
-
-    render() {
-        return (
-            <div>
-                <div>站点 <Select
-                    key='stationInfoBasicSelect'
-                    showSearch
-                    style={{ width: 200 }}
-                    placeholder="Select a station"
-                    optionFilterProp="station"
-                    onChange={onChange}
-                    // onFocus={onFocus}
-                    // onBlur={onBlur}
-                    // onSearch={onSearch}
-                    filterOption={(input, option) =>
-                        option.props.staion.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                >
-                    {this.props.stationList.map((station, key) => (
-                        <Select.Option key={key} value={station.stationCode}>{station.station}</Select.Option>
-                    ))}
-                </Select></div>
-                <div>
-                    <Chart key='stationInfoBasicChart' height={400} data={this.props.data} scale={this.props.cols} forceFit>
-                        <Legend />
-                        <Axis name="month" />
-                        <Axis
-                            name="revenue"
-                            label={{
-                                formatter: val => `${val}亿`,
-                            }}
-                        />
-                        <Tooltip
-                            crosshairs={{
-                                type: 'y',
-                            }}
-                        />
-                        <Geom type="line" position="month*revenue" size={2} color={'city'} />
-                        <Geom
-                            type="point"
-                            position="month*revenue"
-                            size={4}
-                            shape={'circle'}
-                            color={'city'}
-                            style={{
-                                stroke: '#fff',
-                                lineWidth: 1,
-                            }}
-                        />
-                    </Chart>
-                </div>
-            </div>
-        )
-    }
+@connect(mapStateToProps)
+class Basic extends React.Component {
+  componentDidMount() {
+    // 初始化
+    var stationBasicChat = echarts.init(document.getElementById('stationBasicChat'));
+    // 绘制图表
+    stationBasicChat.setOption({
+        title: { text: '某地区蒸发量和降水量' },
+        tooltip : {
+          trigger: 'axis'
+      },
+      legend: {
+          data:['蒸发量','降水量']
+      },
+      toolbox: {
+          show : true,
+          feature : {
+              dataView : {show: true, readOnly: false},
+              magicType : {show: true, type: ['line', 'bar']},
+              restore : {show: true},
+              saveAsImage : {
+                show: true,
+                type: 'jpg'
+              }
+          }
+      },
+        xAxis : [
+          {
+              type : 'category',
+              data : this.props.data.xdata
+          }
+      ],
+      yAxis : [
+          {
+              type : 'value'
+          }
+      ],
+        series : [
+          {
+              name:'蒸发量',
+              type:'bar',
+              data: this.props.data.ydata.ydata1,
+              markPoint : {
+                  data : [
+                      {type : 'max', name: '最大值'},
+                      {type : 'min', name: '最小值'}
+                  ]
+              },
+              markLine : {
+                  data : [
+                      {type : 'average', name: '平均值'}
+                  ]
+              }
+          },
+          {
+              name:'降水量',
+              type:'bar',
+              data: this.props.data.ydata.ydata2,
+              markPoint : {
+                  data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                  ]
+              },
+              markLine : {
+                  data : [
+                      {type : 'average', name : '平均值'}
+                  ]
+              }
+          },
+      ]
+    });
 }
+render() {
+    return (
+        <div id="stationBasicChat" style={{ width: '100%', height: 500 }}></div>
+    );
+}
+}
+
+export default Basic;
