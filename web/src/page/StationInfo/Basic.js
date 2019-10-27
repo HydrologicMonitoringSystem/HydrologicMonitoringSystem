@@ -9,19 +9,35 @@ import 'echarts/lib/component/toolbox';
 import 'echarts/lib/component/markPoint';
 import 'echarts/lib/component/markLine';
 import { connect } from 'dva';
+import { Select } from 'antd';
 
 const namespace = 'stationInfoBasic';
 
 const mapStateToProps = (state) => {
     const data = state[namespace].data;
+    const stationList = state[namespace].stationList;
     return {
-        data
+        data,
+        stationList
     };
 };
-@connect(mapStateToProps)
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onDidMount: () => {
+            dispatch({
+                type: `${namespace}/queryStationList`,
+            });
+        },
+    };
+};
+
+@connect(mapStateToProps, mapDispatchToProps)
 class Basic extends React.Component {
     componentDidMount() {
-        // 初始化
+        this.props.onDidMount();
+        console.log(this.props.data);
+        // echart初始化
         var stationBasicChat = echarts.init(document.getElementById('stationBasicChat'));
         // 绘制图表
         stationBasicChat.setOption({
@@ -99,7 +115,25 @@ class Basic extends React.Component {
     }
     render() {
         return (
-            <div id="stationBasicChat" style={{ width: '80%', height: 500 }}></div>
+            <div>
+                <div>站点：<Select
+                showSearch
+                style={{ width: 200 }}
+                placeholder="Select a station"
+                optionFilterProp="stationSelectors"
+                // onChange={onChange}
+                // onFocus={onFocus}
+                // onBlur={onBlur}
+                // onSearch={onSearch}
+                filterOption={(input, option) =>
+                  option.props.stationList.station.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }>{this.props.stationList.map(station => {
+                    return (
+                        <Option value={station.stationCode}>{station.station}</Option>
+                    )
+                })}</Select></div>
+                <div id="stationBasicChat" style={{ width: '80%', height: 500 }}></div>
+            </div>
         );
     }
 }

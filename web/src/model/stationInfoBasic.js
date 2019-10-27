@@ -40,7 +40,9 @@ export default {
     reducers: {
         initStationList(state, { payload: stationList }) {
             return {
-                stationList
+                stationList,
+                data: state.data,
+                cols: state.cols,
             };
         }
     },
