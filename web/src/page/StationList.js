@@ -12,6 +12,7 @@ const mapStateToProps = (state) => {
         helpMsg,
         columns,
         data,
+        dataLoading: state.loading.effects['stationList/queryStationList'],
     };
 };
 
@@ -38,6 +39,7 @@ export default class StationList extends Component {
                 dataSource={this.props.data}
                 bordered
                 footer={() => this.props.helpMsg}
+                loading={this.props.dataLoading}
             />
         );
     }

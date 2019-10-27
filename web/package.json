@@ -14,5 +14,8 @@
   "devDependencies": {
     "umi": "^2.10.7",
     "umi-plugin-react": "^1.12.8"
+  },
+  "dependencies": {
+    "bizcharts": "^3.5.5"
   }
 }
