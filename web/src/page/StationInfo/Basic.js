@@ -1,6 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Select } from 'antd';
+import {
+    G2,
+    Chart,
+    Geom,
+    Axis,
+    Tooltip,
+    Coord,
+    Label,
+    Legend,
+    View,
+    Guide,
+    Shape,
+    Facet,
+    Util,
+} from 'bizcharts';
+
+const { Line } = Guide;
 
 const namespace = 'stationInfoBasic'
 
@@ -10,8 +27,12 @@ function onChange(value) {
 
 const mapStateToProps = (state) => {
     const stationList = state[namespace].stationList;
+    const data = state[namespace].data;
+    const cols = state[namespace].cols;
     return {
-        stationList
+        stationList,
+        data,
+        cols
     };
 };
 
@@ -33,23 +54,55 @@ export default class StationInfoBasic extends Component {
 
     render() {
         return (
-            <div>站点 <Select
-                showSearch
-                style={{ width: 200 }}
-                placeholder="Select a station"
-                optionFilterProp="station"
-                onChange={onChange}
-                // onFocus={onFocus}
-                // onBlur={onBlur}
-                // onSearch={onSearch}
-                filterOption={(input, option) =>
-                    option.props.staion.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-            >
-                {this.props.stationList.map(station => (
-                    <Option value={ station.stationCode }>{ station.station }</Option>
-                ))}
-            </Select></div>
-        );
+            <div>
+                <div>站点 <Select
+                    key='stationInfoBasicSelect'
+                    showSearch
+                    style={{ width: 200 }}
+                    placeholder="Select a station"
+                    optionFilterProp="station"
+                    onChange={onChange}
+                    // onFocus={onFocus}
+                    // onBlur={onBlur}
+                    // onSearch={onSearch}
+                    filterOption={(input, option) =>
+                        option.props.staion.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                >
+                    {this.props.stationList.map((station, key) => (
+                        <Select.Option key={key} value={station.stationCode}>{station.station}</Select.Option>
+                    ))}
+                </Select></div>
+                <div>
+                    <Chart key='stationInfoBasicChart' height={400} data={this.props.data} scale={this.props.cols} forceFit>
+                        <Legend />
+                        <Axis name="month" />
+                        <Axis
+                            name="revenue"
+                            label={{
+                                formatter: val => `${val}亿`,
+                            }}
+                        />
+                        <Tooltip
+                            crosshairs={{
+                                type: 'y',
+                            }}
+                        />
+                        <Geom type="line" position="month*revenue" size={2} color={'city'} />
+                        <Geom
+                            type="point"
+                            position="month*revenue"
+                            size={4}
+                            shape={'circle'}
+                            color={'city'}
+                            style={{
+                                stroke: '#fff',
+                                lineWidth: 1,
+                            }}
+                        />
+                    </Chart>
+                </div>
+            </div>
+        )
     }
 }

@@ -16,6 +16,7 @@
     "umi-plugin-react": "^1.12.8"
   },
   "dependencies": {
-    "bizcharts": "^3.5.5"
+    "bizcharts": "^3.5.5",
+    "echarts": "^4.4.0"
   }
 }
