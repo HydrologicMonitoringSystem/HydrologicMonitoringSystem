@@ -4,13 +4,20 @@ export default {
     namespace: 'stationInfoBasic',
     state: {
         stationList: [],
-        data: {
-            xdata: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-            ydata: {
-                ydata1: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
-                ydata2: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
-            }
-        },
+        data: [
+            { category: '1月', value: [2.0, 2.6] },
+            { category: '2月', value: [4.9, 5.9] },
+            { category: '3月', value: [7.0, 9.0] },
+            { category: '4月', value: [23.2, 26.4] },
+            { category: '5月', value: [25.6, 28.7] },
+            { category: '6月', value: [76.7, 70.7] },
+            { category: '7月', value: [135.6, 175.6] },
+            { category: '8月', value: [162.2, 182.2] },
+            { category: '9月', value: [32.6, 48.7] },
+            { category: '10月', value: [20.0, 18.8] },
+            { category: '11月', value: [6.4, 6.0] },
+            { category: '12月', value: [3.3, 2.3] },
+        ],
         cols: {
             month: {
                 range: [0, 1],
