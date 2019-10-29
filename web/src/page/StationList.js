@@ -34,13 +34,15 @@ export default class StationList extends Component {
 
     render() {
         return (
-            <Table
-                columns={this.props.columns}
-                dataSource={this.props.data}
-                bordered
-                footer={() => this.props.helpMsg}
-                loading={this.props.dataLoading}
-            />
+            <div>
+                <Table
+                    columns={this.props.columns}
+                    dataSource={this.props.data}
+                    bordered
+                    footer={() => this.props.helpMsg}
+                    loading={this.props.dataLoading}
+                />
+            </div>
         );
     }
 }
